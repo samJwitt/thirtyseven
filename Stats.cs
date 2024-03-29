@@ -9,7 +9,7 @@ namespace thirtyseven
         public int highestFromFirstThirtySeven { get; set; }
         public int highestValue { get; set; }
         public int? selectedRanking { get; set; }
-        public bool won { get; set; }
+        public bool won => selectedValue == highestValue;
         public int[] topTen { get; set; }
         public int cap { get; set; }
         

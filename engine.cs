@@ -1,32 +1,29 @@
-
-using System.Text.Json.Serialization;
-
 namespace thirtyseven
 {
-    public class engine
+    public class Engine
     {
-        public engine(){}
+        public Engine(){}
         public Stats Execute()
         {
             const int nThirtySeven = 37;
-            int rCap = randomCap();
-            int[] selection = generateSelectionArray(rCap);
+            int rngCeiling = getRngCeiling();
+            int[] selectionArray = generateSelectionArray(rngCeiling);
 
-            var highestFromControlCap = maxFromFirst(selection, nThirtySeven);
+            var highestFromControlCap = maxFromFirst(selectionArray, nThirtySeven);
             int acceptedIdx = -1;
             for (int i = nThirtySeven; i<100; i++)
             {
-                if (selection[i] > highestFromControlCap)
+                if (selectionArray[i] > highestFromControlCap)
                 {
                     acceptedIdx = i;
                     break;
                 }
             }
 
-            return makeStats(selection, acceptedIdx, rCap);
+            return makeStats(selectionArray, acceptedIdx, rngCeiling);
         }
 
-        private static int randomCap()
+        private static int getRngCeiling()
         {
             return new Random().Next(101,1000);
         }
@@ -59,30 +56,25 @@ namespace thirtyseven
             int value = selection[idx];
             var selectionSorted = selection.OrderDescending().ToArray();
 
-            int sortedIdx = Array.IndexOf(selectionSorted, value);
-
-            return sortedIdx + 1;
+            return Array.IndexOf(selectionSorted, value) + 1;
         }
 
         private static int maxFromFirst(int[] selection, int cap)
         {
-            var capped = selection.Take(cap).ToArray();
-            return capped.Max();
+            return selection.Take(cap).ToArray().Max();
         }
 
         private static Stats makeStats(int[] selection, int acceptedIdx, int rCap)
         {
-            Stats stats = new Stats();
-
-            stats.selectedValue = acceptedIdx > -1 ? selection[acceptedIdx] : null;
-            stats.highestFromFirstThirtySeven = maxFromFirst(selection, 37);
-            stats.highestValue = selection.Max();
-            stats.selectedRanking = acceptedIdx > -1 ? ranking(selection, acceptedIdx) : null;
-            stats.topTen = selection.OrderDescending().Take(10).ToArray();
-            stats.cap = rCap;
-            stats.won = stats.selectedValue == stats.highestValue;
-
-            return stats;
+            return new Stats()
+            {
+                selectedValue = acceptedIdx > -1 ? selection[acceptedIdx] : null,
+                highestFromFirstThirtySeven = maxFromFirst(selection, 37),
+                highestValue = selection.Max(),
+                selectedRanking = acceptedIdx > -1 ? ranking(selection, acceptedIdx) : null,
+                topTen = selection.OrderDescending().Take(10).ToArray(),
+                cap = rCap
+            };  
         }
 
         public static void printStats(Stats stats)
@@ -101,7 +93,6 @@ namespace thirtyseven
             {
                 Console.WriteLine("Impossible game. Highest in first 37.");
             }
-            Console.WriteLine("---------------------------------------------");
         }
     }
 }
