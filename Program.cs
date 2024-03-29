@@ -7,29 +7,21 @@ namespace thirtyseven
     {
         static void Main(string[] args)
         {
+            int iterations = 1000;
             engine thirtySeven = new engine();
             List<Stats> stats = new List<Stats>();
-
-            List<int> iterationAccuracy = new List<int>();
-            for(int ct = 0; ct < 25; ct++)
+            for (int i = 0; i < 1000; i++)
             {
-                stats.Clear();
-                for (int i = 0; i < 100; i++)
-                {
-                    stats.Add(thirtySeven.Execute());
-                }
-                iterationAccuracy.Add(stats.Where(x => x.won == true).Count());
-            
-                Console.Clear();
-                Console.WriteLine("Iterations: " + iterationAccuracy.Count());
-                double avg = iterationAccuracy.Average();
-                double stddev = Math.Sqrt(iterationAccuracy.Average(v=>Math.Pow(v-avg,2)));
-                Console.WriteLine("Average: " + avg);
-                Console.WriteLine("Std. Dev: " + stddev);
-                Console.WriteLine();
-                Console.WriteLine("Example stats: ");
-                engine.printStats(stats.First());
+                stats.Add(thirtySeven.Execute());
             }
+            double averageAccuracy = stats.Where(x => x.won == true).Count() * .10;
+        
+            Console.Clear();
+            Console.WriteLine("Iterations: " + iterations);
+            Console.WriteLine("Average: " + averageAccuracy);
+            Console.WriteLine();
+            Console.WriteLine("Example stats: ");
+            engine.printStats(stats.First(x => x.won == true));
         }
     }
 }
